@@ -47,13 +47,13 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "OpenEarsSampleApp/ViewController.m"
-         timestampString = "404660718.389736"
+         timestampString = "404681545.145396"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "506"
-         endingLineNumber = "506"
-         landmarkName = "-shutDown"
-         landmarkType = "5">
+         startingLineNumber = "524"
+         endingLineNumber = "524"
+         landmarkName = "@implementation ViewController"
+         landmarkType = "3">
       </FileBreakpoint>
    </FileBreakpoints>
 </Bucket>

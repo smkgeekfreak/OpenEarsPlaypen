@@ -157,7 +157,7 @@
                                                              @"AUGMENTED REALITY",
                                                              @"DELOITTE",
                                                              @"CONTEST WINNER",
-                                                             @"SPEAKING NOW",
+                                                             @"NOW SPEAKING",
                                                              @"CHANGE MODEL",
                                                              nil]];
     
@@ -221,7 +221,7 @@
                                                                   @"BRIAN",
                                                                   @"LAUREN",
                                                                   @"SHAWN KIRCHER",
-                                                                  @"SPEAKING NOW",
+                                                                  @"START",
                                                                   nil]];
     //
     LanguageModelGenerator *languageModelGenerator2 = [[LanguageModelGenerator alloc] init];
@@ -321,7 +321,7 @@
 			self.usingStartLanguageModel = TRUE;
 		}
 	}
-	else if([hypothesis isEqualToString:@"SPEAKING NOW"]) { // If the user says "CHANGE MODEL", we will switch to the alternate model (which happens to be the dynamically generated model).
+	else if([hypothesis isEqualToString:@"NOW SPEAKING"]) { // If the user says "CHANGE MODEL", we will switch to the alternate model (which happens to be the dynamically generated model).
         
 		// Here is an example of language model switching in OpenEars. Deciding on what logical basis to switch models is your responsibility.
 		// For instance, when you call a customer service line and get a response tree that takes you through different options depending on what you say to it,
@@ -334,6 +334,24 @@
 			// Trying to switch between JSGF models (the ones that end in .gram) will return no result.
 			[self.pocketsphinxController changeLanguageModelToFile:self.pathToDynamicallyGeneratedNamesGrammar withDictionary:self.pathToDynamicallyGeneratedNamesDictionary];
 			self.usingStartLanguageModel = FALSE;
+		//} else { // If we're on the dynamically generated model, switch to the start model (this is just an example of a trigger and method for switching models).
+		//	[self.pocketsphinxController changeLanguageModelToFile:self.pathToGrammarToStartAppWith withDictionary:self.pathToDictionaryToStartAppWith];
+		//	self.usingStartLanguageModel = TRUE;
+		//}
+	}
+    else if([hypothesis isEqualToString:@"START"]) { // If the user says "CHANGE MODEL", we will switch to the alternate model (which happens to be the dynamically generated model).
+        
+		// Here is an example of language model switching in OpenEars. Deciding on what logical basis to switch models is your responsibility.
+		// For instance, when you call a customer service line and get a response tree that takes you through different options depending on what you say to it,
+		// the models are being switched as you progress through it so that only relevant choices can be understood. The construction of that logical branching and
+		// how to react to it is your job, OpenEars just lets you send the signal to switch the language model when you've decided it's the right time to do so.
+		
+		//if(self.usingStartLanguageModel == FALSE) { // If we're on the starting model, switch to the dynamically generated one.
+        
+        // You can only change language models with ARPA grammars in OpenEars (the ones that end in .languagemodel or .DMP).
+        // Trying to switch between JSGF models (the ones that end in .gram) will return no result.
+        [self.pocketsphinxController changeLanguageModelToFile:self.pathToDynamicallyGeneratedGrammar withDictionary:self.pathToDynamicallyGeneratedDictionary];
+        self.usingStartLanguageModel = FALSE;
 		//} else { // If we're on the dynamically generated model, switch to the start model (this is just an example of a trigger and method for switching models).
 		//	[self.pocketsphinxController changeLanguageModelToFile:self.pathToGrammarToStartAppWith withDictionary:self.pathToDictionaryToStartAppWith];
 		//	self.usingStartLanguageModel = TRUE;
@@ -355,6 +373,24 @@
 	NSLog(@"AudioSession interruption began."); // Log it.
 	self.statusTextView.text = @"Status: AudioSession interruption began."; // Show it in the status box.
 	[self.pocketsphinxController stopListening]; // React to it by telling Pocketsphinx to stop listening since it will need to restart its loop after an interruption.
+}
+//SMK
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
+{
+    UIApplicationState state = [application applicationState];
+    if (state == UIApplicationStateActive) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Reminder"
+                                                        message:notification.alertBody
+                                                       delegate:self cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+    }
+    
+    // Request to reload table view data
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadData" object:self];
+    
+    // Set icon badge number to zero
+    application.applicationIconBadgeNumber = 0;
 }
 
 // An optional delegate method of OpenEarsEventsObserver which informs that the interruption to the audio session ended.
